@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package session;
+
+option go_package = "github.com/tdesc/webrtc-backend/sessionpb";
+
+// Request for starting or connecting to a session.
+message SessionRequest {
+    string session_id = 1;
+}
+
+// Response containing the WebRTC SDP offer.
+message SessionResponse {
+    string session_id = 1;
+    string webrtc_offer = 2;
+}
+
+// Chat message definition.
+message ChatMessage {
+    string session_id = 1;
+    string sender = 2;
+    string message = 3;
+    int64 timestamp = 4;
+}
+
+// Session service definition with gRPC methods.
+service SessionService {
+    // Start a new WebRTC session and return the SDP offer.
+    rpc StartSession(SessionRequest) returns (SessionResponse);
+    // Connect to an existing session (for simplicity, returns the offer again).
+    rpc ConnectSession(SessionRequest) returns (SessionResponse);
+    // Bidirectional chat streaming for session-related messages.
+    rpc Chat(stream ChatMessage) returns (stream ChatMessage);
+}
